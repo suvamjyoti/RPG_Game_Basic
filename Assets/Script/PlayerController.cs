@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private LayerMask movementMask;
 
+    public Interactable focus;
     private PlayerMotor motor;
 
     void Awake()
@@ -16,6 +17,13 @@ public class PlayerController : MonoBehaviour
         cam = Camera.main;
         motor = GetComponent<PlayerMotor>();
     }
+
+
+//`````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+//`````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+//UPDATE METHOD
+//`````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+//`````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
 
 
     void Update()
@@ -33,6 +41,9 @@ public class PlayerController : MonoBehaviour
                 //if we hit something then execute this
                 // now to move the player to point we hit
                 motor.MoveToPoint(hit.point);
+                //remove focus
+                RemoveFocus();
+
             }
         }
 
@@ -46,10 +57,37 @@ public class PlayerController : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit, 100))
             {
-                //if we hit something then execute this
-                //player interact with the object hit
-                Debug.Log("interactable");
+                Interactable interactable = hit.collider.GetComponent<Interactable>();
+                if (interactable != null)
+                {
+                    //focus on an object
+                    setFocus(interactable);
+                }
             }
         }
+    }
+
+//`````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+//`````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+
+
+    void setFocus(Interactable newFocus){
+        if(newFocus!=focus){
+            if(focus!=null){
+                focus.onDeFocused();
+            }
+            focus = newFocus;
+            motor.followTarget(newFocus);
+        }
+        
+        newFocus.OnFocused(transform); 
+    }
+
+    void RemoveFocus(){
+        if(focus!=null){
+            focus.onDeFocused();
+        }
+        focus = null;
+        motor.StopFollowingTarget();
     }
 }

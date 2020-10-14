@@ -7,7 +7,7 @@ public class CameraController : MonoBehaviour
     [SerializeField]
     private Vector3 offset;
     [SerializeField]
-    private float currentZoom,pitch,maxZoom,minZoom,zoomSpeed,currentYaw,YawSpeed;
+    private float currentZoom,pitch,maxZoom,minZoom,zoomSpeed,currentYaw,YawSpeed,currentAngle;
 
 
     void Update()
@@ -15,7 +15,9 @@ public class CameraController : MonoBehaviour
         currentZoom -= Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
         currentZoom = Mathf.Clamp(currentZoom, minZoom, maxZoom);
 
-        currentYaw += Input.GetAxis("Horizontal") * YawSpeed * Time.deltaTime; 
+        currentYaw += Input.GetAxis("Horizontal") * YawSpeed * Time.deltaTime;
+        currentAngle += Input.GetAxis("Vertical") * YawSpeed * Time.deltaTime;
+         
     }
 
     void LateUpdate()
